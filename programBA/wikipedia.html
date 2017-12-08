@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <style>
+#result a{
+       pointer-events: none !important;
+       cursor: default;
+       color:Blue;
+}
+    </style>
+</head>
+<body>
+<!--?php
+#require '.api_key';
+$service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
+$params = array(
+  'query' => 'united_kingdom',
+  'limit' => 10,
+  'indent' => TRUE,
+  'key' => AIzaSyDnjNsFuNTP-Dz3t9LyPKrEBV4uj8Fepfg);
+$url = $service_url . '?' . http_build_query($params);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$response = json_decode(curl_exec($ch), true);
+curl_close($ch);
+foreach($response['itemListElement'] as $element) {
+  print ($element['result']['name']);
+}
+?-->
+
+<!--?php
+#require '.api_key';
+$service_url = 'https://kgsearch.googleapis.com/v1/entities:search';
+$params = array(
+  'query' => 'united_kingdom',
+  'limit' => 5,
+  'indent' => TRUE,
+  'key' => 'AIzaSyDnjNsFuNTP-Dz3t9LyPKrEBV4uj8Fepfg');
+$url = $service_url . '?' . http_build_query($params);
+$ch = curl_init();
+curl_setopt($ch, CURLOPT_URL, $url);
+curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+$response = json_decode(curl_exec($ch), true);
+curl_close($ch);
+foreach($response['itemListElement'] as $element) {
+  print($element['result']['name']. ' ');
+  print($element['result']['description']. ' ');
+  print($element['result']['image']['url']. ' ');
+  print ($element['result']['detailedDescription']['articleBody']. '<br/><br/>');
+  #print ($element. '<br/>');
+}
+?-->
+<!--div id="wikiInfo">&nbsp;</div>
+<script>
+//$.getJSON('http://en.wikipedia.org/w/api.php?action=parse&format=json&prop=text&page=Template:Infobox%20United_Kingdom', function(json) { 
+$.getJSON('http://en.wikipedia.org/w/api.php?action=parse&prop=text&rvprop=content&format=json&page=United_Kingdom&rvsection=0', function(json) { 
+//$.getJSON('http://en.wikipedia.org/w/api.php?action=parse&page=United_Kingdom&prop=text&format=json&callback=?', function(json) { 
+    $('#wikiInfo').html(json.parse.text['*']); 
+    $("#wikiInfo").find("a:not(.references a)").attr("href", function(){ return "http://www.wikipedia.org" + $(this).attr("href");}); 
+    $("#wikiInfo").find("a").attr("target", "_blank"); 
+  });
+</script-->
+<div id ="result">&nbsp;</div>
+<script>
+var searchTerm="United_Kingdom";
+var url="http://en.wikipedia.org/w/api.php?action=parse&format=json&page=" + searchTerm+"&redirects&prop=text&callback=?";
+$.getJSON(url,function(data){
+  wikiHTML = data.parse.text["*"];
+  $wikiDOM = $("<document>"+wikiHTML+"</document>");
+  $("#result").append($wikiDOM.find('.infobox').html());
+});
+</script>
+
+
+
+</body>
+</html>
