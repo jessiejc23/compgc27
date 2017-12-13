@@ -9,15 +9,25 @@ def retrieve(number, conn):
 	'''search database number column with the number
 	return corresponding wikipedia and restaurant'''
 	cur = conn.cursor()
+	query = ("SELECT Country_wikipedia, Country_restaurants FROM api_lookup "
+		     "WHERE number = '%d'" % (number))
+	cur.execute(query)
+	for Country_wikipedia, Country_restaurants in cur.fetchall():
+	#	print (Country_wikipedia, Country_restaurants)
+		
+		wikipedia = Country_wikipedia
+		cuisine = Country_restaurants
 
-    cur.execute( "SELECT 2016-total FROM uclStudentStats WHERE Country =" + number)
+	return wikipedia, cuisine
 
-    print (2016-total)
 
 
 
 print ("Using mysql.connector…")
 import mysql.connector
 myConnection = mysql.connector.connect( host=hostname, port = 9092, user=username, passwd=password, db=database )
-retrieve("UK", myConnection )
+wikipedia, cuisine = retrieve(0, myConnection )
+print("hey")
+print(wikipedia)
+print(cuisine)
 myConnection.close()

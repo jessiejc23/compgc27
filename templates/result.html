@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<!-- Template by quackit.com -->
+<html>
+<head>
+<style type="text/css">
+		
+		.shadow_border{
+		border: 1px solid #000;
+		height:  250px; 
+		width:350px;
+		margin-left: 400px;
+		margin-top: 50px;
+		-webkit-border-radius: 8px;
+		-moz-border-radius: 8px;
+		border-radius: 8px;
+		-webkit-box-shadow: #666 0px 0px 10px;
+		-moz-box-shadow: #666 0px 0px 10px;
+		box-shadow: #666 0px 0px 10px;}
+
+		.check{
+			font-size: 30px;
+			color: blue;
+			text-align: center;
+			padding-top: 70px;
+		}
+
+		#yes img{
+			width: 110px;
+			height: 110px;
+		}
+		#no img{
+			width: 130px;
+			height: 130px;
+		}
+
+		#submit-yes {
+			background-image:url("{{url_for('static', filename='yes.png')}}");
+			background-size: cover;
+			border:none;
+			width :60px;
+			height:60px;
+			cursor:pointer;
+			color: transparent;
+			position:absolute;
+			top:350px;
+			left: 450px;
+		}
+
+		#submit-no {
+			background-image:url("{{url_for('static', filename='no.png')}}");
+			background-size: cover;
+			border:none;
+			width :60px;
+			height:60px;
+			cursor:pointer;
+			color: transparent;
+			position:absolute;
+			top:340px;
+			left: 600px;
+		}
+	</style>
+</head>
+<body>
+	
+		<div class="shadow_border">
+			
+           <p class="check">{{country}}</p>
+
+        </div>
+        <div id="yes">
+        	<!-- label this as yes-->
+        	<!--
+        	<a href="/insert-results/">
+        	<img src="{{url_for('static', filename='yes.png')}}" style="position:absolute;top:350px;left: 450px;"></a>
+        	-->
+        	<form id="form" method="post" action="/insert-results/">
+        		<input type="submit" id ="submit-yes">
+        	</form>
+        </div>
+
+        <div id="no">
+        	
+        	<form id="form" method="post" action="/go-to-select/">
+        		<input type="submit" id ="submit-no">
+        	</form>
+        </div>
+
+        <div>
+ 
+    </div>
+    <!--/form-->
+
+</body>
+</html>

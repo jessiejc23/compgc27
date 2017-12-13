@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.4/jquery.min.js"></script>
+    <style>
+#result a{
+       pointer-events: none !important;
+       cursor: default;
+       color:Blue;
+}
+    </style>
+</head>
+<body>
+<div id ="result">&nbsp;</div>
+<script>
+var searchTerm=localStorage.getItem('wikiStorage');
+var url="http://en.wikipedia.org/w/api.php?action=parse&format=json&page=" + searchTerm+"&redirects&prop=text&callback=?";
+$.getJSON(url,function(data){
+  wikiHTML = data.parse.text["*"];
+  $wikiDOM = $("<document>"+wikiHTML+"</document>");
+  $("#result").append($wikiDOM.find('.infobox').html());
+});
+</script>
+
+
+
+</body>
+</html>
