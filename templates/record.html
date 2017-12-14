@@ -82,7 +82,7 @@
 
 	<script type="text/javascript">
 	function start() {
-		var duration = 2,
+		var duration = 23,
 display = document.querySelector('#countdown');
 var timer = duration, seconds;
 setInterval(function () {
@@ -95,7 +95,7 @@ setInterval(function () {
         display.textContent = seconds + " seconds left";
 
         if (--timer < 0) {
-            timer = duration;
+            display.textContent = "Identifying...";
         }
     }, 1000);
 

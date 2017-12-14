@@ -64,20 +64,28 @@
 		
 	</head>
 	<body>		
-        <script type = "text/javascript">
-window.onload = function() {
+    <script type = "text/javascript">
+    window.onload = function() {
+
 	var wikipedia = {{wikipedia|tojson}}
 	var cuisine = {{cuisine|tojson}}
+	var country = {{country|tojson}}
+	//if ((localStorage.getItem('wikiStorage') !== null) || (localStorage.getItem('countryStorage') !== null) || (localStorage.getItem('cuisineStorage') !== null))
+		//{
+			
+		//}
+	localStorage.removeItem ('wikiStorage');
+	localStorage.removeItem ('countryStorage');
+	localStorage.removeItem ('cuisineStorage');
 	localStorage.setItem('wikiStorage',wikipedia);
 	localStorage.setItem('cuisineStorage',cuisine);
+	localStorage.setItem('countryStorage', country);
 }
-
-
         </script>
         <main>
         	<p>{{country}}</p>
 			<div class="frame">
-				<iframe id="top" src="wikipedia.html" name="main" height="700px" width="100%" hspace="10" vspace="10" align="middle">
+				<iframe id="top" name="main" height="700px" width="100%" hspace="10" vspace="10" align="middle">
 					
 				</iframe>
 			</div>
@@ -88,11 +96,12 @@ window.onload = function() {
 			<ul>
 				<li><a href="wikipedia.html" target="main">Wikipedia</a></li>
 				<li><a href="restaurants.html" target="main">Restaurant</a></li>
-				<li><a href="/plot-graph/" target="main">UCL Student Stats</a></l>
-				<li><a href="homepage.html" target="_top">Homepage</a></li>
+				<li><a href="/plot-graph" target="main">UCL Student Stats</a></l>
+				<li><a href="/" target="_top">Homepage</a></li>
 			</ul>	
 			</div>
 		</nav>
 	
 	</body>
 </html>
+

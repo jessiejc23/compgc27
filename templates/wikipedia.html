@@ -13,16 +13,18 @@
 <body>
 <div id ="result">&nbsp;</div>
 <script>
-var searchTerm=localStorage.getItem('wikiStorage');
+ window.onload = function() {
+	wikiStorage = localStorage.getItem('wikiStorage')
+var searchTerm=wikiStorage;
 var url="http://en.wikipedia.org/w/api.php?action=parse&format=json&page=" + searchTerm+"&redirects&prop=text&callback=?";
 $.getJSON(url,function(data){
   wikiHTML = data.parse.text["*"];
   $wikiDOM = $("<document>"+wikiHTML+"</document>");
   $("#result").append($wikiDOM.find('.infobox').html());
 });
+}
 </script>
-
-
-
 </body>
 </html>
+
+        	

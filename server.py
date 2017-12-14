@@ -1,4 +1,4 @@
-from flask import Flask, render_template, session, make_response, request, jsonify
+from flask import Flask, render_template, session, make_response, request, jsonify, url_for
 app = Flask(__name__)
 
 import pyaudio
@@ -31,6 +31,10 @@ def index():
 def render_about():
 	return render_template('about.html')
 
+@app.route('/homepage.html', methods=["GET"])
+def render_homepage():
+	return render_template('homepage.html')
+
 @app.route('/instructions.html', methods=["GET"])
 def render_instructions():
 	return render_template('instructions.html')
@@ -39,13 +43,21 @@ def render_instructions():
 def record():
 	return render_template('record.html')
 
-@app.route('/wikipedia.html')
+@app.route('/check.html', methods=["GET","POST"])
+def check():
+	return render_template('check.html')
+
+@app.route('/wikipedia.html', methods=["GET","POST"])
 def wikipedia():
 	return render_template('wikipedia.html')
 
-@app.route('/restaurants.html')
+@app.route('/restaurants.html', methods=["GET","POST"])
 def restaurants():
 	return render_template('restaurants.html')
+
+@app.route('/graph.html', methods=["GET","POST"])
+def graph():
+	return render_template('graph.html')
 
 def retrieve_database_country(number):
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
@@ -68,7 +80,7 @@ def record_audio():
 	CHANNELS = 2
 	RATE = 44100
 	FORMAT = pyaudio.paInt16
-	RECORD_SECONDS = 2
+	RECORD_SECONDS = 23
 	WAVE_OUTPUT_FILENAME = "output.wav"
 
 	p = pyaudio.PyAudio()
@@ -119,10 +131,21 @@ def record_audio():
 	#need to modify the templates bit because it is not saved in templates folder
 	country = retrieve_database_country(number)
 	#print(country)
-	session['mfcc'] = mfcc.tolist()
-	session['number'] = int(number)
+	session.pop('number', None)
+	#mfcc.dump('mfccdumps')
+	mfcc = mfcc.tolist()
+	print(len(mfcc))
+	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
+	cur = conn.cursor()
+	mfcc = "hey"
+	query = (" INSERT INTO `audioFiles` (`mfcc`, `flag`) VALUES ('%s', FALSE)" % (mfcc))
+	cur.execute(query)
+	conn.close()
 
+	#print(len(session['mfcc']))
+	session['number'] = int(number)
 	return render_template("result.html", country = country, number = session['number'])
+	
 
 def retrieve_database_api(number):
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, cursorclass=pymysql.cursors.DictCursor  )
@@ -137,31 +160,53 @@ def retrieve_database_api(number):
 
 	return wikipedia, cuisine
 
-@app.route('/go-to-select/', methods=["GET","POST"])
+@app.route('/go-to-select', methods=["GET","POST"])
 def go_to_select():
 	return render_template('select.html', data=[{'country':'USA', 'value':0}, {'country':'UK', 'value':1}, {'country':'Spain', 'value':2}, {'country':'France','value':3},
-		{'country':'Russia', 'value':4},{'country':'Saudi Arabia', 'value':5}, {'country':'China', 'value':6},{'country':'Saudi Arabia', 'value':7}, {'country':'Japan', 'value':8}, {'country':'Others', 'value':9} ])
+		{'country':'Russia', 'value':4},{'country':'Saudi Arabia', 'value':5}, {'country':'China', 'value':6},{'country':'South Korea', 'value':7}, {'country':'Japan', 'value':8}, {'country':'Others', 'value':9} ])
 
-@app.route('/insert-results/', methods=["GET","POST"])
+@app.route('/insert-results', methods=["POST"])
 def insert_results():
+	
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
 	cur = conn.cursor()
-	value = session['number']
-	mfcc = session ['mfcc']
-	query = (" INSERT INTO `audioFiles` (`number`, `mfcc`) VALUES ('%d', hextoraw(%s))" % (number, mfcc))
+	
+	number = session['number']
+	'''mfcc = open('/Users/jessietan/Desktop/COMPGC27/Final_Project_Codes/mfccdumps')
+	mfcc_retrieved = mfcc.encode('utf-8').strip()
+	mfcc_retrieved = mfcc_retrieved.read()
+	mfcc.close()'''
+	query = ("UPDATE `audioFiles` SET `number` = '%d' WHERE `flag` = FALSE" % (number))
+	cur.execute(query)
+	query = ("UPDATE `audioFiles` SET `flag` = TRUE WHERE `flag` = FALSE")
 	cur.execute(query)
 	conn.close()
 	country = retrieve_database_country (number)
 	wikipedia, cuisine =retrieve_database_api (number)
 	return render_template("checkresult.html", country = country, wikipedia = wikipedia, cuisine = cuisine)
+	#return make_response(jsonify("do nothing for now")), 204
 
-@app.route('/_array2python', methods=["GET", "POST"])
+@app.route('/_array2python', methods=["POST"])
 def array2python():
-	session['number'] = request.form.get('comp_select')
-	insert_results()
-	return make_response(jsonify("do nothing for now")), 204
+	session.pop('number', None)
+	session['number'] = int(request.form.get('comp_select'))
+	mfcc ="US"
+	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
+	cur = conn.cursor()
+	
+	number = session['number']
+	
+	query = (" INSERT INTO `audioFiles` (`number`, `mfcc`) VALUES ('%d', '%s')" % (number, mfcc))
+	cur.execute(query)
+	conn.close()
+	country = retrieve_database_country (number)
+	wikipedia, cuisine =retrieve_database_api (number)
+	return render_template("checkresult.html", country = country, wikipedia = wikipedia, cuisine = cuisine)
+	#insert_results()
+	#return make_response(jsonify("do nothing for now")), 204
 
-@app.route('/plot-graph/', methods = ["POST"])
+
+@app.route('/plot-graph', methods = ["GET","POST"])
 def plot_graph():
 	number = session['number']
 	conn = pymysql.connect( host=hostname, port = 9092, user=username, passwd=password, db=database )
@@ -222,9 +267,11 @@ def plot_graph():
 		mode = 'graduate',
 		name = 'graduate'
 	)
+
+	country = retrieve_database_country(number)
 			
 	layout = Layout (
-		title = 'Year vs Student Stats',
+		title = 'Number of Students from ' + country + ' in UCL (2000-2016)',
 		xaxis = XAxis(title = 'Year'),
 		yaxis = YAxis(title= 'Number of Students in UCL')
 
@@ -232,8 +279,8 @@ def plot_graph():
 			
 	data = [trace0, trace1, trace2]
 	fig = Figure(data= data, layout = layout)
-			
-	py.offline.plot(fig,filename="{{url_for('templates', filename='graph.html')}}", auto_open=False)
+	#temp_file = url_for('templates', filename='graph.html')
+	py.offline.plot(fig,filename='templates/graph.html', auto_open=False)
 	conn.close()
 	return render_template('checkresult_graph.html')
 
