@@ -1,48 +1,54 @@
 <!DOCTYPE html>
-<html lang="zh">
+<html>
 <head>
 <meta charset="UTF-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"> 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="stylesheet" href="dist/css/select-theme-dark.css" />
 <style type="text/css">
-	.container{
-		width: 900px;
-		margin: 0 auto;
-	}
-	select {
-			font-size: 1em;
-		}
 
 		.scroll-parent {
-			margin-top: 50px;
+			margin-top:-21px;
 			margin-left: 340px;
 			height: 50px;
 			width: 230px;
-			
-			
 		}
 
 	#question{
-		font-size: 30px;
-		margin-top: 150px;
-		margin-left: 230px;
+		
+		font-family:Sans-serif;
+	}
+
+	#submit-yes {
+		margin: 100px 0px 0px 500px;
+
 	}
 </style>
 
 </head>
 <body>
+<script type = "text/javascript">
+//when first loaded, no value is selected, hence cannot submit an empty value
+ window.onload = function() {
+    document.getElementById("submit-yes").disabled = true;
+}
+
+//once an option is selected, the submit button is enabled. and user can no longer click the 'select a country' option
+function selectChanged(){
+	document.getElementById("submit-yes").disabled = false; 
+}          
+ </script>
+
+
 <div id="question">
-		<h3>What is country origin?</h3> <br>
-		<h5>If your country is not in the list, choose the closest option. Otherwise, choose 'Others'.</h5>
+		<h1>What is your country origin?</h1>
+		<h4>If your country is not in the list, choose the closest option. Otherwise, choose 'Others'.</h4>
 </div>
 
 <form class="form-inline" method="POST" action="/_array2python">
-<!--img src="submit.png" width="100" height="70" style="position:absolute;top:350px;left: 350px;" id="button" -->
 <input type="submit" id ="submit-yes" value="Submit">
 
 	<div class="scroll-parent">
-		<select name="comp_select">
+		<select name="comp_select" id="country" onchange="selectChanged()">
 				<option selected="true" disabled="disabled">Select a country...</option>
 				{% for o in data %}
               <option value="{{ o.value }}">{{ o.country }}</option>

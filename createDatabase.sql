@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost:9092
--- Generation Time: Dec 09, 2017 at 07:22 PM
+-- Generation Time: Jan 04, 2018 at 10:23 PM
 -- Server version: 5.5.42
 -- PHP Version: 7.0.0
 
@@ -49,8 +49,9 @@ INSERT INTO `apiLookup` (`Country`, `number`, `Country_wikipedia`, `Country_rest
 --
 
 CREATE TABLE `audioFiles` (
-  `number` int(11) NOT NULL,
-  `mfcc` blob NOT NULL
+  `number` int(11) DEFAULT NULL,
+  `mfcc` mediumtext,
+  `flag` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -134,7 +135,8 @@ INSERT INTO `total` (`number`, `2016-total`, `2015-total`, `2014-total`, `2013-t
 (5, 162, 156, 144, 120, 106, 98, 90, 96, 68, 47, 43, 41, 44, 43, 35, 24, 20),
 (6, 3681, 3226, 2480, 2311, 1851, 1468, 1204, 1015, 828, 779, 672, 590, 496, 412, 242, 130, 93),
 (7, 314, 303, 237, 240, 246, 250, 217, 190, 156, 139, 135, 139, 128, 111, 102, 75, 101),
-(8, 156, 171, 159, 129, 113, 125, 116, 121, 105, 118, 138, 166, 174, 186, 141, 138, 162);
+(8, 156, 171, 159, 129, 113, 125, 116, 121, 105, 118, 138, 166, 174, 186, 141, 138, 162),
+(4, 173, 187, 184, 174, 156, 127, 113, 98, 92, 85, 67, 22, 64, 69, 54, 40, 59);
 
 -- --------------------------------------------------------
 

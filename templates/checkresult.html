@@ -3,7 +3,7 @@
 <html>
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-		<title>Instructions</title>
+		<title>Information</title>
 		<style type="text/css">
 		
 		body{
@@ -21,9 +21,9 @@
 			top: 0;
 			bottom: 0; 
 			left: 0;
-			width: 200px; /* Width of navigation frame */
+			width: 200px; 
 			height: 100%;
-			overflow: hidden; /* Disables scrollbars on the navigation frame. To enable scrollbars, change "hidden" to "scroll" */
+			overflow: hidden;
 			background: #eee;
 		}
 		
@@ -57,39 +57,28 @@
 			color: darkgreen;
 			text-decoration: none;
 		}
-				
-		
-		
 		</style>
-		
 	</head>
 	<body>		
     <script type = "text/javascript">
     window.onload = function() {
-
-	var wikipedia = {{wikipedia|tojson}}
-	var cuisine = {{cuisine|tojson}}
-	var country = {{country|tojson}}
-	//if ((localStorage.getItem('wikiStorage') !== null) || (localStorage.getItem('countryStorage') !== null) || (localStorage.getItem('cuisineStorage') !== null))
-		//{
-			
-		//}
-	localStorage.removeItem ('wikiStorage');
-	localStorage.removeItem ('countryStorage');
-	localStorage.removeItem ('cuisineStorage');
-	localStorage.setItem('wikiStorage',wikipedia);
-	localStorage.setItem('cuisineStorage',cuisine);
-	localStorage.setItem('countryStorage', country);
-}
-        </script>
-        <main>
-        	<p>{{country}}</p>
-			<div class="frame">
-				<iframe id="top" name="main" height="700px" width="100%" hspace="10" vspace="10" align="middle">
-					
-				</iframe>
-			</div>
-		</main>
+		var wikipedia = {{wikipedia|tojson}}
+		var cuisine = {{cuisine|tojson}}
+		var country = {{country|tojson}}
+		localStorage.removeItem ('wikiStorage');
+		localStorage.removeItem ('countryStorage');
+		localStorage.removeItem ('cuisineStorage');
+		localStorage.setItem('wikiStorage',wikipedia);
+		localStorage.setItem('cuisineStorage',cuisine);
+		localStorage.setItem('countryStorage', country);
+	}
+    </script>
+    <main>
+        <h1><b>Information about {{country}}</b></h1>
+		<div class="frame">
+			<h4>Check out three types of information about {{country}} by navigating the tabs on the left sidebar.</h4>
+		</div>
+	</main>
 	
 		<nav id="nav">
 			<div class="innertube">

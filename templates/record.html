@@ -39,7 +39,7 @@
 			}
 						
 			#content {
-				margin-left: 550px; /* Same as 'nav' width */
+				margin-left: 500px; /* Same as 'nav' width */
 			} /*调右边table 的位置*/
 			
 	
@@ -48,11 +48,16 @@
 				margin: 0;
 				padding: 0;
 			}
+
+			#countdown{
+				margin-left:150px;
+				margin-top:200px;
+			}
 			
 			.myTable { 
 				margin-top: 100px;
 				margin-left: 30px;
-				width: 500px;
+				width: 450px;
 				
 				background-color: lemonchiffon;
 				border-collapse: collapse; 
@@ -67,10 +72,11 @@
 						padding-left: 50px;
 						padding-top: 0px;
 						padding-right: 30px;
-						height:  400px;
+						height: 400px;
 						color: blue;
-						text-align: left;
+						text-align: justify;
 						font-size: 20px;
+						background-color: lemonchiffon;
 					}
 					.myTable th { 
 						
@@ -83,27 +89,18 @@
 	<script type="text/javascript">
 	function start() {
 		var duration = 23,
-display = document.querySelector('#countdown');
-var timer = duration, seconds;
-setInterval(function () {
-        //minutes = parseInt(timer / 60, 10)
-        seconds = parseInt(timer % 60, 10);
-
-        //minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        display.textContent = seconds + " seconds left";
+		display = document.querySelector('#countdown');
+		var timer = duration, seconds;
+		setInterval(function () {
+        	seconds = parseInt(timer % 60, 10);
+        	seconds = seconds < 10 ? "0" + seconds : seconds;
+        	display.textContent = seconds + " seconds left";
 
         if (--timer < 0) {
             display.textContent = "Identifying...";
         }
     }, 1000);
-
 	}
-  
-
-
-
 	</script>
 	</head>
 	<body>		
@@ -114,18 +111,14 @@ setInterval(function () {
 							<tr>
 								<th>Record</th>
 							</tr>
-							<tr>
-								<td> 
-									<div>
-										<a href="/record-audio" id="start_button" onclick="start()">
-										<img src="{{url_for('static', filename='record.png')}}" width="150" height="150" style="position:absolute;top:280px;left: 750px;">
-										
-										</div>
-								    </a>
-							    </td>
-							    <td><p id="countdown"></p></td>
+							<tr style ="height: 400px">
+							<div>
+								<a href="/record-audio" id="start_button" onclick="start()">
+								<img src="{{url_for('static', filename='record.png')}}" width="150" height="150" style="position:absolute;top:280px;left: 700px;"> </a>
+							</div>
+								<td><p id="countdown"></p></td>
 							</tr>
-						</table>
+					</table>
 				</div>
 			</main>
 			<nav id="nav">
@@ -134,9 +127,8 @@ setInterval(function () {
 						<tr>
 							<th>Read</th>
 						</tr>
-							
 							<tr>
-								<td>Please call Stella. Ask her to bring these things with her from the store: Six spoons of fresh snow peas, five thick slabs of blue cheese, and maybe a snack for her bother Bob. We also need a small plastic snacks and a big toy frog for the kids. She can scoop these things into three red bags, and we will go meet her Wednesday at the train station.</td>
+								<td>Please call Stella. Ask her to bring these things with her from the store: six spoons of fresh snow peas, five thick slabs of blue cheese, and maybe a snack for her brother Bob. We also need a small plastic snake and a big toy frog for the kids. She can scoop these things into three red bags, and we will go meet her Wednesday at the train station.</td>
 							</tr>
 						</table>
 				</div>

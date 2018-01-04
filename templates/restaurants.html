@@ -78,15 +78,15 @@
             });
             var openNow = '';
       try{
-  openNow = place.opening_hours.open_now;
-  if (openNow === true)
-    openNow = 'Open Now'
-  else if (openNow === false)
-    openNow = 'Close'
-}
-catch(e){
-  openNow='No work time provided';
-}
+          openNow = place.opening_hours.open_now;
+          if (openNow === true)
+              openNow = 'Open Now'
+          else if (openNow === false)
+              openNow = 'Close'
+        }
+      catch(e){
+              openNow='No work time provided';
+      }
             
             google.maps.event.addListener(marker, 'mouseover', function() {
               infoWindow.setContent('<div><strong>' + place.name + '</strong><br>' + place.formatted_address + '<br>User Rating: ' + place.rating 

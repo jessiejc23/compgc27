@@ -18,9 +18,9 @@ app.config['SECRET_KEY'] = 'JeCheJiXiYuHe'
 
 hostname = 'localhost'
 username = 'root'
-password = 'xxx' #root for jimmy's laptop
+password = 'xxx' 
 database = 'accent_classifier'
-port = 9092 #3306 for jimmy's laptop
+port = 9092 
 
 
 @app.route('/', methods=["GET"])
@@ -60,6 +60,7 @@ def graph():
 	return render_template('graph.html')
 
 def retrieve_database_country(number):
+	print(number)
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
 	cur = conn.cursor()
 	query = ("SELECT Country FROM apiLookup "
@@ -97,24 +98,17 @@ def record_audio():
 	print("* recording")
 	t = 0
 	for i in range(0, int(RATE / CHUNK * RECORD_SECONDS)):
-	    #print (i)
-	    #print i, for 3 seconds i prints from 0 to 128, so total 129 bytes. 129 divide by 3 = 43..? 
 	    if (i%42) == 0:
 	        print('%d seconds left' %(23-t))
 	        t+=1
 	    data = stream.read(CHUNK, exception_on_overflow = False)
-	    #print(type(data))
 	    wav_file.append(data)
 	    
 	print("* done")
 	stream.stop_stream()
 	stream.close()
 	p.terminate()
-
-	#the following converts a list to a byte object
-	#byte = b''.join(wav_file) 
-
-	#the following saves the audio file but our project doesn't require this step.
+	
 	wf = wave.open(WAVE_OUTPUT_FILENAME, 'wb')
 	wf.setnchannels(CHANNELS)
 	wf.setsampwidth(p.get_sample_size(FORMAT))
@@ -123,26 +117,23 @@ def record_audio():
 	wf.close()
 
 	#run model to output a result 
-
-	#country = retrieve_database_country(number)
-	#add how to retrieve mfcc from deep learning model
 	ac = ac_classifier()
 	number, mfcc = ac.predict('/Users/jessietan/Desktop/COMPGC27/Final_Project_Codes/output.wav') 
-	#need to modify the templates bit because it is not saved in templates folder
+	print(type(mfcc))
 	country = retrieve_database_country(number)
-	#print(country)
+	
 	session.pop('number', None)
-	#mfcc.dump('mfccdumps')
-	mfcc = mfcc.tolist()
-	print(len(mfcc))
+
+	mfcc = ''.join([str(k)+',' for k in mfcc])[:-1]
+	mfcc = "\"" + mfcc + "\""
+	
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
 	cur = conn.cursor()
-	mfcc = "hey"
-	query = (" INSERT INTO `audioFiles` (`mfcc`, `flag`) VALUES ('%s', FALSE)" % (mfcc))
+	query = "INSERT INTO audioFiles(mfcc, flag) VALUES ("+ mfcc +", 0)"
 	cur.execute(query)
+	conn.commit()
 	conn.close()
 
-	#print(len(session['mfcc']))
 	session['number'] = int(number)
 	return render_template("result.html", country = country, number = session['number'])
 	
@@ -170,41 +161,37 @@ def insert_results():
 	
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
 	cur = conn.cursor()
-	
 	number = session['number']
-	'''mfcc = open('/Users/jessietan/Desktop/COMPGC27/Final_Project_Codes/mfccdumps')
-	mfcc_retrieved = mfcc.encode('utf-8').strip()
-	mfcc_retrieved = mfcc_retrieved.read()
-	mfcc.close()'''
+
 	query = ("UPDATE `audioFiles` SET `number` = '%d' WHERE `flag` = FALSE" % (number))
 	cur.execute(query)
 	query = ("UPDATE `audioFiles` SET `flag` = TRUE WHERE `flag` = FALSE")
 	cur.execute(query)
+	conn.commit()
 	conn.close()
 	country = retrieve_database_country (number)
 	wikipedia, cuisine =retrieve_database_api (number)
 	return render_template("checkresult.html", country = country, wikipedia = wikipedia, cuisine = cuisine)
-	#return make_response(jsonify("do nothing for now")), 204
 
 @app.route('/_array2python', methods=["POST"])
 def array2python():
 	session.pop('number', None)
 	session['number'] = int(request.form.get('comp_select'))
-	mfcc ="US"
+	number = session['number']
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
 	cur = conn.cursor()
-	
-	number = session['number']
-	
-	query = (" INSERT INTO `audioFiles` (`number`, `mfcc`) VALUES ('%d', '%s')" % (number, mfcc))
+	query = ("UPDATE `audioFiles` SET `number` = '%d' WHERE `flag` = FALSE" % (number))
 	cur.execute(query)
+	query = ("UPDATE `audioFiles` SET `flag` = TRUE WHERE `flag` = FALSE")
+	cur.execute(query)
+	conn.commit()
 	conn.close()
-	country = retrieve_database_country (number)
-	wikipedia, cuisine =retrieve_database_api (number)
-	return render_template("checkresult.html", country = country, wikipedia = wikipedia, cuisine = cuisine)
-	#insert_results()
-	#return make_response(jsonify("do nothing for now")), 204
-
+	if (number == 9):
+		return render_template("feedback.html")
+	else:
+		country = retrieve_database_country (number)
+		wikipedia, cuisine =retrieve_database_api (number)
+		return render_template("checkresult.html", country = country, wikipedia = wikipedia, cuisine = cuisine)
 
 @app.route('/plot-graph', methods = ["GET","POST"])
 def plot_graph():
