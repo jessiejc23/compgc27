@@ -124,7 +124,7 @@ def record_audio():
 	
 	session.pop('number', None)
 
-	mfcc = ','.join([str(k) for k in mfcc])[:-1]
+	mfcc = ''.join([str(k)+',' for k in mfcc])[:-1]
 	mfcc = "\"" + mfcc + "\""
 	
 	conn = pymysql.connect( host=hostname, port = port, user=username, passwd=password, db=database, charset='utf8mb4', cursorclass=pymysql.cursors.DictCursor )
