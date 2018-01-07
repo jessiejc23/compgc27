@@ -1,6 +1,6 @@
 COMPGC27 Programming for Business Analytics - Group 4
 
-Accent Classifier Application
+Accent Classifier Application with Deep Learning Model
 
 Che Yu Wu
 
