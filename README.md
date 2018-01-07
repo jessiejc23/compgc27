@@ -13,3 +13,5 @@ Xinyi Zhao
 Yi Chieh Chou
 
 Yuan Ding
+
+Note: The deep learning training model process can be found in model_training.zip
